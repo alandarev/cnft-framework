@@ -1,6 +1,6 @@
-# cworker
+# CNFT Framework
 
-This is a Cardano Worker sub-system of the project
+This is a Cardano NFT framework used to generate NFT's, upload NFTS, mint and send them over Cardano network, an API for the high-demand sale event.
 
 ## It's scope
 
