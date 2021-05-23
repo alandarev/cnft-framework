@@ -1,0 +1,71 @@
+API specifications:
+
+Note: the price_lovelace is specified in integer. The pre-formatted price is available as "price_ada" which is price_lovelace / 1,000,000
+
+
+PURCHASING FLOW:
+
+1. Reserve
+GET https://apitest.cryptodoggies.org/reserve
+
+a.
+Desired response:
+{"status": true, "payload": {"key": "802c175f-a119-4602-854e-ce5e940fb772", "price_lovelace": "42987285", "price_ada": "42.987285", "address": "addr1vyvqr429xgj58j3aw04tnkakj9pfvvmwhkw46uc9rv53mfs8sqpyv", "timer": 900, "tier": 2, "reserve_hash": "6747a05d68de246e7f59cc148a6ddb"}}
+
+key is used for checking the status.
+price and address are instructions how to pay
+time_left is seconds how much is left before reservation is freeed
+
+Free'd reservation means, that the time is over, and user needs to go make a new reservation
+
+b.
+Possible response:
+{"status": false, "payload": {"error_code": 2, "error_message": "All tokens are reserved and/or sold", "reserved": 0}}
+
+Means there are no tokens available for reservation. They might be available if some reservation expires. Tell user there are {reserved} reserved tokens that might be expired. Offer them to try again in a few minutes
+
+c.
+Possible response:
+{"status": false, "payload": {"error_code": 1, "error_message": "Please wait 29 seconds before reserving a new token", "timer": 29}}
+
+Means user tried to reserve too many tokens in a short time. Inform user they need to wait {timer} seconds.
+
+
+
+2. Check Status
+
+Cache set to 9 seconds (call API every 10 seconds I guess?)
+
+https://apitest.cryptodoggies.org/status/KEY/RESERVE_HASH
+Ex:
+https://apitest.cryptodoggies.org/status/802c175f-a119-4602-854e-ce5e940fb772/6747a05d68de246e7f59cc148a6ddb
+
+a.
+Desired response until processed:
+{"status": false, "payload": {"price_lovelace": 42987285, "price_ada": "42.987285", "timer": 859.064216, "address": "addr1vyvqr429xgj58j3aw04tnkakj9pfvvmwhkw46uc9rv53mfs8sqpyv", "tier": 2, "reserve_hash": "6747a05d68de246e7f59cc148a6ddb"}}
+Display to user the transaction is still pending, and they still have X seconds left
+
+b.
+Desired response when payment is processed and the token is sent to the payer:
+{"status": true, "payload": {"price_lovelace": 31615040, "price_ada": "84.976802", "address": "addr_test1qrqx0s0ctlutv06twgup2rgmqaman7wjqc9ctquphwz94wy259pq2nz5utv5h4tmda04phrtnkejy2k9kc9sfkzlexlqe5jnv4"}, "metadata": {"721": {"b45bb44b413b36e74b44f306703566997624926c4e0a3040481f1111": {"CryptoDoggie1020": {"id": 1025, "name": "Crypto Doggie #1025", "image": "ipfs://ipfs/QmQnhGA8HDu7CJu3ymk9NWzRFPZxoPP1qXt1dV58fj9j41", "breed": "Shiba", "composition": {"dog": {"body": "normal", "head": "normal", "eyes": "wink", "mouth": "smile"}, "background": "none", "equipment": {"straight_hand": "flag_cardano", "legs": "shorts_denim", "feet": "sneakers_green", "arced_hand": "hand_in_hoodie_red", "body": "hoodie_red"}}}}}}}
+
+metadata is info about the token. Is used to format the "Congratulations" page.
+
+c.
+Response when its expired:
+{"status": false, "payload": {"error": 3, "error_message": "Reserve Hash does not match. Not Authorized"}}
+
+
+
+GENERIC API:
+
+Below are generic API to display info on the webpage
+
+GET https://apitest.cryptodoggies.org/info
+
+Expected response:
+{"stats": {"sold": 2, "raised_lovelace": 41784099, "raised_ada": "41.784099"}, "cardano_info": {"cardano": {"usd": 1.23}}}
+
+A total $ would be round(raised_ada * usd)
+
+

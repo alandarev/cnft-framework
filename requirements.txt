@@ -1,0 +1,9 @@
+cardano-tools==0.4.0
+python-dotenv==0.17.0
+psycopg2==2.8.6
+falcon==3.0.0
+falcon-jsonify==1.2
+falcon-caching==0.3.4
+memcache==0.4.0
+pylibmc==1.6.1
+pika==1.2.0
