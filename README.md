@@ -20,7 +20,7 @@ There are lots of useful scripts residing in tools folder that can be helpful to
 This project is not properly cleaned up.
 
 It is a proven platform that was used by CryptoDoggies, if you're an experienced developer using it may save you weeks of time.
-In this case, do not hesitate to do pull requests as you go through and generalize it to fit all sort of CNFT projects.
+In this case, do not hesitate to do merge requests as you go through and generalize it to fit all sort of CNFT projects.
 
 
 ## Install
