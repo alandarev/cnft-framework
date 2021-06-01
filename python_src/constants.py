@@ -17,10 +17,14 @@ MINTING_SENDER_ONLY_WALLET="minting_sender_address"
 MINTING_SENDER_ONLY_ADDRESS=None
 MINTING_SENDER_ONLY_KEY=None
 
+SIMPLE_METADATA=None
+SIMPLE_ITERATOR=None
+
 
 def initiate_constants(shelley):
     globals().update(MINTING_ADDRESS = getenv("MINTING_ADDRESS"))
     globals().update(STORAGE_ADDRESS = getenv("STORAGE_ADDRESS"))
+    globals().update(SIMPLE_ITERATOR = Path(getenv("SIMPLE_ITERATOR")))
     globals().update(TOKENS_PATH = shelley.working_dir / "tokens")
     globals().update(WALLET_SKEY = shelley.working_dir / (MINTING_WALLET + ".skey"))
     globals().update(POLICY_SKEY = shelley.working_dir / "policy" / (MINTING_POLICY + ".skey"))
@@ -33,4 +37,7 @@ def initiate_constants(shelley):
     except:
         print("WARN: POLICY_HASH not loaded")
         pass
+
+    if getenv("SIMPLE_METADATA"):
+        globals().update(SIMPLE_METADATA = Path(getenv("SIMPLE_METADATA")).read_text())
 

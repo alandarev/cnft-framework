@@ -23,7 +23,9 @@ shelley = ShelleyTools(
             network=getenv("NETWORK_MAGIC"))
 
 db_sync = psycopg2.connect(getenv("CARDANO_DB_SYNC_POSTGRES_URL"))
-db_tokens = psycopg2.connect(getenv("TOKENS_DB_URL"))
+db_tokens = None
+if getenv("TOKENS_DB_URL"):
+    db_tokens = psycopg2.connect(getenv("TOKENS_DB_URL"))
 constants.initiate_constants(shelley)
 
 def purge_queue():
