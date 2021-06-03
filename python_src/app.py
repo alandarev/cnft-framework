@@ -45,8 +45,11 @@ class LoadDBInterface:
             print("Connecting to DB_SYNC")
             db_sync = psycopg2.connect(getenv("CARDANO_DB_SYNC_POSTGRES_URL"))
         if not is_db_valid(db_tokens):
-            print("Connecting to DB TOKENS")
-            db_tokens = psycopg2.connect(getenv("TOKENS_DB_URL"))
+            if not getenv("TOKENS_DB_URL"):
+                print("Skipping connection to DB Tokens. No URL set")
+            else:
+                print("Connecting to DB TOKENS")
+                db_tokens = psycopg2.connect(getenv("TOKENS_DB_URL"))
         if not mc:
             print("Connecting to memcache")
             mc = pylibmc.Client(["127.0.0.1"])

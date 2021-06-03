@@ -98,13 +98,9 @@ def mint_and_send(shelley,
     minting_tokens = '+'.join(minting_tokens)
 
 
-    json_path = constants.TOKENS_PATH / f"doggies_multiple.json"
+    json_path = constants.TOKENS_PATH / f"tokens_multiple.json"
     with open(json_path, 'w') as f:
         f.write(json.dumps(merged_metadata))
-
-    print(merged_metadata)
-    print(minting_tokens)
-    print(sending_tokens)
 
     # Construct raw no-fees
     command = (
@@ -118,19 +114,16 @@ def mint_and_send(shelley,
             f"--tx-out {storage_address}+{spare_ada} "
             f"--metadata-json-file {json_path} "
             f"--mint {minting_tokens} "
+            f"--minting-script-file {constants.POLICY_SCRIPT} "
             f"--out-file {tx_draft_file}"
             )
-    print(command)
 
     results = shelley.run_cli(command)
-    print(results.stderr)
     assert not results.stderr
 
     # shelley.load_protocol_parameters() - it is being executed by the calc_min_fee already
 
     min_fee = shelley.calc_min_fee(tx_draft_file, tx_in_count=1, tx_out_count=2, witness_count=2)
-
-    print(f"MIN FEE: {min_fee}")
 
     spare_ada = spare_ada - min_fee
 
@@ -146,6 +139,7 @@ def mint_and_send(shelley,
             f"--tx-out {storage_address}+{spare_ada} "
             f"--metadata-json-file {json_path} "
             f"--mint {minting_tokens} "
+            f"--minting-script-file {constants.POLICY_SCRIPT} "
             f"--out-file {tx_raw_file}"
             )
 
@@ -156,7 +150,8 @@ def mint_and_send(shelley,
                                                             wallet_key,
                                                             constants.POLICY_SKEY
                                                            ],
-                                                           script=constants.POLICY_SCRIPT)
+                                                           # script=constants.POLICY_SCRIPT - no longer used in latest version
+                                                           )
 
     trans_results = shelley.submit_transaction(tx_signed_file)
 
